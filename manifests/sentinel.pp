@@ -102,9 +102,12 @@ define redis::sentinel (
   $conf_file_name = "redis-sentinel_${sentinel_name}.conf"
   $conf_file = "/etc/${conf_file_name}"
   file { $conf_file:
-      ensure  => file,
-      content => template('redis/etc/sentinel.conf.erb'),
-      require => Class['redis::install'];
+    ensure  => file,
+    content => template('redis/etc/sentinel.conf.erb'),
+    replace => false,
+    owner   => $sentinel_user,
+    group   => $sentinel_group,
+    require => Class['redis::install'];
   }
 
   # startup script
