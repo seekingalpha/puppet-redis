@@ -189,6 +189,8 @@ define redis::server (
   file { $conf_file:
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
+      owner   => $redis_user,
+      group   => $redis_group,
       require => Class['redis::install'];
   }
 
