@@ -152,9 +152,10 @@ define redis::server (
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
       replace => $force_rewrite,
+      owner   => $redis_user,
+      group   => $redis_group,
       require => Class['redis::install'];
   }
-  
 
   if $systemd_os {
 
