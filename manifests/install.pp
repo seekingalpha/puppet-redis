@@ -30,7 +30,7 @@ class redis::install (
   $redis_group       = $::redis::params::redis_group,
 ) inherits redis {
   if ( $redis_package == true ) {
-    case $::operatingsystem {
+    case $::osfamily {
       'Debian', 'Ubuntu': {
         package { 'redis-server' : ensure => $redis_version, }
         service { 'redis-server' :
@@ -55,7 +55,7 @@ class redis::install (
   } else {
 
     # install necessary packages for build.
-    case $::operatingsystem {
+    case $::osfamily {
       'Debian', 'Ubuntu': {
         ensure_packages('build-essential')
         Package['build-essential'] -> Anchor['redis::prepare_build']
