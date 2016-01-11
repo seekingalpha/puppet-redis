@@ -173,7 +173,7 @@ define redis::server (
   $redis_group             = $::redis::install::redis_group
 
   $redis_install_dir = $::redis::install::redis_install_dir
-  $redis_init_script = $::operatingsystem ? {
+  $redis_init_script = $::osfamily ? {
     /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-server.erb',
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
     /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
