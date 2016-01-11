@@ -8,9 +8,9 @@ describe 'redis::install' do
   end
 
   context 'with defaults for all parameters on RedHat' do
-    let(:facts) {{ :operatingsystem => 'RedHat' }}
+    let(:facts) {{ :osfamily => 'RedHat' }}
     it do
-      should have_redis__installbinary_resource_count(6) 
+      should have_redis__installbinary_resource_count(6)
       should contain_file('/opt').with({
         'ensure'  => 'directory',
       })
@@ -18,7 +18,7 @@ describe 'redis::install' do
   end
 
   context 'with defaults for all parameters on Debian' do
-    let(:facts) {{ :operatingsystem => 'Debian' }}
+    let(:facts) {{ :osfamily => 'Debian' }}
     it do
       should have_redis__installbinary_resource_count(6)
       should contain_file('/opt').with({
