@@ -76,14 +76,9 @@
 # [*hash_max_ziplist_value*]
 #   Threshold for ziplist value. Default: 64
 #
-# [*force_rewrite*]
-#
-#   Boolean. Default: `false`
-#
-#   Configure if the redis config is overwritten by puppet followed by a
-#   redis restart. Since redis automatically rewrite their config since
-#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
-#   run with redis 2.8 or later.
+# [*protected_mode*]
+#   If no password and/or no bind address is set, redis defaults to being reachable only
+#   on the loopback interface. Turn this behaviour off by setting protected mode to 'no'.
 #
 # [*client_output_buffer_limit*]
 #   Hash containing 3 possible classes as keys (normal, slave, pubsub) and
@@ -130,9 +125,9 @@ define redis::server (
   $save                       = [],
   $hash_max_ziplist_entries   = 512,
   $hash_max_ziplist_value     = 64,
-  $force_rewrite              = false,
   $client_output_buffer_limit = {},
   $manage_logrotate           = true,
+  $protected_mode             = undef,
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
@@ -159,7 +154,7 @@ define redis::server (
     "/etc/redis_${redis_name}.conf":
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
-      replace => $force_rewrite,
+      replace => false,
       owner   => $redis_user,
       group   => $redis_group,
       require => Class['redis::install'];
