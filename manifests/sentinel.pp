@@ -98,6 +98,20 @@ define redis::sentinel (
     default                                                    => undef,
   }
 
+  case $::osfamily {
+    'RedHat': {
+      $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
+      if $::operatingsystemmajrelease >= 7 { $has_systemd = true }
+    }
+    'Debian': {
+      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
+      $has_systemd = true
+    }
+    default:  {
+      $has_systemd = false
+    }
+  }
+
   # redis conf file
   $conf_file_name = "redis-sentinel_${sentinel_name}.conf"
   $conf_file = "/etc/${conf_file_name}"
@@ -108,8 +122,7 @@ define redis::sentinel (
   }
 
   # startup script
-  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0 and $::operatingsystem != 'Amazon') {
-    $service_file = "/usr/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
+  if $has_systemd {
     exec { "systemd_service_${sentinel_name}_preset":
       command     => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",
       notify      => Service["redis-sentinel_${sentinel_name}"],

@@ -183,6 +183,20 @@ define redis::server (
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
   $redis_with_cluster_support = versioncmp($::redis::install::redis_version,'3.0') >= 0
 
+  case $::osfamily {
+    'RedHat': {
+      $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
+      if $::operatingsystemmajrelease >= 7 { $has_systemd = true }
+    }
+    'Debian': {
+      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
+      $has_systemd = true
+    }
+    default:  {
+      $has_systemd = false
+    }
+  }
+
   # redis conf file
   $conf_file_name = "redis_${redis_name}.conf"
   $conf_file = "/etc/${conf_file_name}"
@@ -195,20 +209,6 @@ define redis::server (
   }
 
   # startup script
-  case $::osfamily {
-    'RedHat': {
-      $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
-      if $::operatingsystemmajrelease >= 7 { $has_systemd = true }
-    }
-    'Debian': {
-      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-      if $::operatingsystemmajrelease >= 8 { $has_systemd = true }
-    }
-    default:  {
-      $has_systemd = false
-    }
-  }
-
   if $has_systemd {
     exec { "systemd_service_${redis_name}_preset":
       command     => "/bin/systemctl preset redis-server_${redis_name}.service",
