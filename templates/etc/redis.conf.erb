@@ -508,9 +508,14 @@ activerehashing yes
 # subscribers and slaves receive data in a push fashion.
 #
 # Both the hard or the soft limit can be disabled just setting it to zero.
+#
 #client-output-buffer-limit normal 0 0 0
 #client-output-buffer-limit slave 256mb 64mb 60
 #client-output-buffer-limit pubsub 32mb 8mb 60
+
+<% @client_output_buffer_limit.sort.each do |key, value| -%>
+client-output-buffer-limit <%= key -%> <%= value %>
+<% end -%>
 
 ################################## INCLUDES ###################################
 
