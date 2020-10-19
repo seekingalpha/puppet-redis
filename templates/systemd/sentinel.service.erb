@@ -1,6 +1,6 @@
 [Unit]
 Description=Redis Sentinel <%= @sentinel_name %>
-After=network.target
+Before=network.target
 
 [Service]
 <% if @sentinel_user and @sentinel_user != 'root' -%>
@@ -19,4 +19,3 @@ Group=<%= @sentinel_group or 'root' %>
 
 [Install]
 WantedBy=multi-user.target
-
